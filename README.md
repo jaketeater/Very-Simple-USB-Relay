@@ -22,8 +22,9 @@ Then save the relay.py in your projects folder and:
     from relay import relay
     from time import sleep
     
-    # Create a relay object, using the vendor/product, which you can 
-    # find with `lsusb`, then just add the 0x prefix.
+    # Create a relay object, using the vendor/product, which you can find with `lsusb`,
+    # then just add the 0x prefix. The id/vendor pair below are the default parameters,
+    # so you can try to instantiate with Relay() and hope you are lucky.
 	relay = Relay(idVendor=0x16c0, idProduct=0x05df)
 
 	# (Setter) Turn switch 1 on
