@@ -1,4 +1,4 @@
-# Simple-USB-Relay
+# Very-Simple-USB-Relay
 A Python 2.7 module for getting/setting the state of USB Relays. 
 ![Image of USB Relay](asset.jpg?raw=true)
 Specifically, these relays are purchased usually from EBay and come from a Chinese manufacturer. They have Songle relays, or look alikes (ex: CNTENGFEI).
