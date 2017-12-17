@@ -9,6 +9,8 @@ There are other python modules out there for controlling these relays, however, 
 
 Also, I am not familiar with communicating with HIDs, and found the other modules confusing and wanted to create something easier to understand.
 
+This does NOT work on Windows 7 (and likely other versions of Windows).  It appears that the OS does not allow the get_feature_report() and send_feature_report() methods.  If you are able to get this working on Windows, please let me know.
+
 # Dependencies
 This module depends on the [hidapi module](https://github.com/trezor/cython-hidapi), which can be installed with the following:
 
