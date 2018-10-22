@@ -18,6 +18,17 @@ This module depends on the [hidapi module](https://github.com/trezor/cython-hida
     pip install --upgrade setuptools
     pip install hidapi
 
+# udev rule
+In linux you may need to create a udev rule in order to use this without sudo privileges.
+
+For example, edit /etc/udev/rules.d/99-usbrelay.rules and add this line:
+	
+	SUBSYSTEM=="usb", ATTR{idVendor}=="16c0", ATTR{idProduct}=="05df", MODE="777"
+
+Then restart your computer or run this command:
+	
+	sudo udevadm control --reload-rule
+
 # Usage
 Then save the relay.py in your projects folder and:
 
