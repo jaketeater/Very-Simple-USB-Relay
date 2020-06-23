@@ -132,7 +132,7 @@ if __name__ == '__main__':
 	relay.state(1, on=True)
 
 	# (Getter) Print the status of switch 1
-	print relay.state(1)
+	print(relay.state(1))
 
 	sleep(1)
 
@@ -140,4 +140,4 @@ if __name__ == '__main__':
 	relay.state(0, on=False)
 
 	# Print the state of all switches
-	print relay.state(0)
+	print(relay.state(0))
