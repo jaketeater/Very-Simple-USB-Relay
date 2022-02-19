@@ -1,4 +1,5 @@
 import hid
+import atexit
 
 """
 
@@ -26,6 +27,10 @@ class Relay(object):
 		self.h = hid.device()
 		self.h.open(idVendor, idProduct)
 		self.h.set_nonblocking(1)
+		atexit.register(self.cleanup)
+
+	def cleanup(self):
+		self.h.close()
 
 	def get_switch_statuses_from_report(self, report):
 		"""
