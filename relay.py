@@ -1,6 +1,6 @@
-import hid
 import atexit
-
+import argparse
+import sys
 """
 
 This relay object uses the HID library instead of usb. 
@@ -19,7 +19,14 @@ pip install hidapi
 A list of avaible methods for the hid object:
 https://github.com/trezor/cython-hidapi/blob/6057d41b5a2552a70ff7117a9d19fc21bf863867/chid.pxd#L9
 
+This code was reworked from code in this repos: https://github.com/jaketeater/Very-Simple-USB-Relay
 """
+
+try:
+	import hid
+except ImportError:
+	raise Exception('Module install via: pip install hidapi')
+
 
 class Relay(object):
 	"""docstring for Relay"""
@@ -75,7 +82,7 @@ class Relay(object):
 		# If 0 is passed as the feature, then 0 is prepended to the report. However,
 		# if 1 is passed, the number is not added and only 8 chars are returned.
 		feature = 1
-		# This is the length of the report. 
+		# This is the length of the report.
 		length = 8
 		return self.h.get_feature_report(feature, length)
 
@@ -93,56 +100,49 @@ class Relay(object):
 		on=True will turn the relay on, on=False will turn them off.
 
 		"""
-
-		# Getter
-		if on == None:
-			if relay == 0:
-				report = self.get_feature_report()
-				switch_statuses = self.get_switch_statuses_from_report(report)
-				status = []
-				for s in switch_statuses:
-					status.append(bool(s))
-			else:
-				report = self.get_feature_report()
-				switch_statuses = self.get_switch_statuses_from_report(report)
-				status = bool(switch_statuses[relay-1])
-
-			return status
-
-		# Setter
-		else:
+		if on is not None:
 			if relay == 0:
 				if on:
 					message = [0xFE]
 				else:
 					message = [0xFC]
 			else:
-				# An integer can be passed instead of the a byte, but it's better to
-				# use ints when possible since the docs use them, but it's not neccessary.
-				# https://github.com/jaketeater/simpleusbrelay/blob/master/simpleusbrelay/__init__.py
 				if on:
 					message = [0xFF, relay]
 				else:
 					message = [0xFD, relay]
-
 			self.send_feature_report(message)
 
+		if relay == 0:
+			report = self.get_feature_report()
+			switch_statuses = self.get_switch_statuses_from_report(report)
+			status = []
+			for s in switch_statuses:
+				status.append(bool(s))
+		else:
+			report = self.get_feature_report()
+			switch_statuses = self.get_switch_statuses_from_report(report)
+			status = bool(switch_statuses[relay-1])
+		return status
+
 if __name__ == '__main__':
-	from time import sleep
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--port', required=True, help="Select relay port")
+	parser.add_argument('--switch', required=False, help="Turn on/off reley")
+	parser.add_argument('--idVendor', required=False, help="idVendor id (linux cmd : lsusb)")
+	parser.add_argument('--idProduct', required=False, help="idProduct id (linux cmd : lsusb)")
+	args = parser.parse_args()
+	port: int = int(args.port)
+	if args.switch == 'False':
+		switch = False
+	elif args.switch == 'True':
+		switch = True
+	else:
+		switch = None
 
-	# Create a relay object
-	relay = Relay(idVendor=0x16c0, idProduct=0x05df)
+	#print(f'Port: {port}, switch: {switch}.')
+	relay = Relay(idVendor=args.idVendor is not None if args.idVendor else 0x16c0, idProduct=args.idProduct is not None if args.idProduct else 0x05df)
+	print(relay.state(port, on=switch))
+	# from time import sleep
 
-	# (Setter) Turn switch 1 on
-	relay.state(1, on=True)
-
-	# (Getter) Print the status of switch 1
-	print(relay.state(1))
-
-	sleep(1)
-
-	# Turn all switches off
-	relay.state(0, on=False)
-
-	# Print the state of all switches
-	print(relay.state(0))
+	# sleep(10)

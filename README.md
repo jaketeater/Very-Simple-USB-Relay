@@ -21,7 +21,7 @@ This module depends on the [hidapi module](https://github.com/trezor/cython-hida
 # udev rule
 In linux you may need to create a udev rule in order to use this without sudo privileges.
 
-For example, edit /etc/udev/rules.d/99-usbrelay.rules and add this line:
+For example, edit /etc/udev/rules.d/99-usbrelay.rules and add this line: (Information available: Linux command `lsusb`, MacOs command: `ioreg -p IOUSB -l -w 0`)
 	
 	SUBSYSTEM=="usb", ATTR{idVendor}=="16c0", ATTR{idProduct}=="05df", MODE="777"
 
@@ -32,26 +32,10 @@ Then restart your computer or run this command:
 # Usage
 Then save the relay.py in your projects folder and:
 
-	from relay import Relay
-	from time import sleep
-
-	# Create a relay object, using the vendor/product, which you can find with `lsusb`,
-	# then just add the 0x prefix. The id/vendor pair below are the default parameters,
-	# so you can try to instantiate with Relay() and hope you are lucky.
-	relay = Relay(idVendor=0x16c0, idProduct=0x05df)
-
-	# (Setter) Turn switch 1 on
-	relay.state(1, on=True)
-
-	# (Getter) Print the status of switch 1 (returns True/False)
-	print(relay.state(1))
-
-	# This is just here so you hear a audible 'click' when the relay trips
-	sleep(1)
-
-	# Turn all switches off
-	relay.state(0, on=False)
-
-	# Print the state of all switches (returns a list of True/False 
-	# per relay)
-	print(relay.state(0))
+    run command:
+    - Turn On/Off all port in relay 
+    python relay.py --port 0 --switch True/False
+    - Turn On/Off 1-8 port in relay 
+    python relay.py --port 1-8 --switch True/False
+    - Show status relay
+    python relay.py --port 0-8 (0 - all status, 1-8 - port status)
